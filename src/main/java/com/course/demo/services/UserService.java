@@ -2,6 +2,7 @@ package com.course.demo.services;
 
 import com.course.demo.entities.User;
 import com.course.demo.repositories.UserRepository;
+import com.course.demo.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> obj = userRepository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User obj) {
@@ -31,8 +32,6 @@ public class UserService {
     }
 
     public User update(Long id, User obj) {
-//        Deprecated
-//        User entity = userRepository.getOne(id);
         User entity = findById(id);
         updateData(entity, obj);
         return userRepository.save(entity);
